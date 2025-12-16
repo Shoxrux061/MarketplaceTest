@@ -5,26 +5,32 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 
-inline fun <T, R> safeApiCall(
-    crossinline apiCall: suspend () -> T,
-    crossinline mapper: (T) -> R
-): Flow<NetworkResult<R>> = flow {
-    try {
+suspend fun <T, R> safeApiCall(
+    apiCall: suspend () -> Response<T>,
+    mapper: (T) -> R
+): NetworkResult<R> {
+    return try {
         val response = apiCall()
-        emit(NetworkResult.Success(mapper(response)))
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) {
+                NetworkResult.Success(mapper(body))
+            } else {
+                NetworkResult.Error(AppError.Server("Response body is null"))
+            }
+        } else {
+            NetworkResult.Error(AppError.Server("HTTP ${response.code()} ${response.message()}"))
+        }
     } catch (e: HttpException) {
-        Log.e("safeApiCall", "HTTP ${e.code()} ${e.message()}")
-        emit(NetworkResult.Error(AppError.Server(e.message())))
+        NetworkResult.Error(AppError.Server("HTTP ${e.code()} ${e.message()}"))
     } catch (e: IOException) {
-        Log.e("safeApiCall", "Network error: ${e.message}")
-        emit(NetworkResult.Error(AppError.Server(e.message)))
+        NetworkResult.Error(AppError.Server("Network error: ${e.message}"))
+    } catch (e: CancellationException) {
+        throw e // корутины отмены не оборачиваем
     } catch (e: Throwable) {
-        if (e is CancellationException) throw e
-        emit(NetworkResult.Error(AppError.Unknown(e)))
-    } catch (e: Exception) {
-        Log.e("safeApiCall", "Unknown error: ${e.message}", e)
-        emit(NetworkResult.Error(AppError.Unknown()))
+        NetworkResult.Error(AppError.Unknown(e))
     }
 }
