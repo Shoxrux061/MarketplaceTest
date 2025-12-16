@@ -65,6 +65,10 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.moshi)
 
+    //Chucker
+    implementation(libs.chucker)
+    implementation(libs.chuckerNoOp)
+
     //DI (Hilt)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
