@@ -1,6 +1,6 @@
 package uz.test.marketplacetest.domain.models
 
-data class ProductItem(
+data class ProductItemModel(
     val category: String,
     val description: String,
     val id: Int,

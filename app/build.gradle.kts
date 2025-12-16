@@ -66,8 +66,8 @@ dependencies {
     implementation(libs.moshi)
 
     //Chucker
-    implementation(libs.chucker)
-    implementation(libs.chuckerNoOp)
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chuckerNoOp)
 
     //DI (Hilt)
     implementation(libs.hilt.android)

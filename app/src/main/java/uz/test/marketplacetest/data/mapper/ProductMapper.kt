@@ -2,12 +2,12 @@ package uz.test.marketplacetest.data.mapper
 
 import uz.test.marketplacetest.data.remote.models.products.ProductItemResponseDTO
 import uz.test.marketplacetest.data.remote.models.products.RatingDTO
-import uz.test.marketplacetest.domain.models.ProductItem
+import uz.test.marketplacetest.domain.models.ProductItemModel
 import uz.test.marketplacetest.domain.models.Rating
 
-fun ProductItemResponseDTO.toDomain(): ProductItem {
+fun ProductItemResponseDTO.toDomain(): ProductItemModel {
 
-    return ProductItem(
+    return ProductItemModel(
         category = category ?: "",
         description = description ?: "",
         id = id ?: 0,

@@ -16,12 +16,12 @@ class ProductsScreenViewModel @Inject constructor(
     private val getProductsUseCase: GetProductListUseCase
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow(ProductScreenUiState())
+    val uiState: StateFlow<ProductScreenUiState> = _uiState
+
     init {
         getProductsList()
     }
-
-    private val _uiState = MutableStateFlow(ProductScreenUiState())
-    val uiState: StateFlow<ProductScreenUiState> = _uiState
 
     private fun getProductsList() {
 
